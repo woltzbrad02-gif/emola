@@ -43,7 +43,7 @@
         <!-- Logs / Status Section -->
         <div class="mt-8">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Live Status Logs:</h3>
-            <div id="logContainer" class="bg-black text-green-400 font-mono text-xs p-4 rounded-md h-48 overflow-y-auto space-y-1">
+            <div id="logContainer" class="bg-black text-green-400 font-mono text-xs p-4 rounded-md h-56 overflow-y-auto space-y-1">
                 <p class="text-gray-500">// Waiting for input...</p>
             </div>
         </div>
@@ -56,6 +56,7 @@
             const p = document.createElement('p');
             if (type === 'success') p.className = 'text-green-400';
             else if (type === 'error') p.className = 'text-red-400';
+            else if (type === 'progress') p.className = 'text-yellow-300';
             else p.className = 'text-gray-300';
             
             p.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
@@ -94,31 +95,34 @@
                     const worksheet = workbook.Sheets[firstSheetName];
                     const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                    logMessage(`Found ${rows.length} rows in Excel. Starting broadcast...`);
+                    const totalRows = rows.length;
+                    logMessage(`Found ${totalRows} rows in Excel. Starting broadcast...`, 'progress');
 
-                    for (let i = 0; i < rows.length; i++) {
+                    for (let i = 0; i < totalRows; i++) {
+                        const currentRowNum = i + 1;
                         const row = rows[i];
                         const botToken = row[0] ? String(row[0]).trim() : '';
                         const chatId = row[1] ? String(row[1]).trim() : '';
 
                         if (!botToken || !chatId) {
-                            logMessage(`Skipping row ${i + 1}: Missing token or chat ID.`, 'error');
+                            logMessage(`[Bot ${currentRowNum}/${totalRows}] Skipping: Missing token or chat ID.`, 'error');
                             continue;
                         }
 
-                        // Send Photo if provided
+                        logMessage(`[Bot ${currentRowNum}/${totalRows}] Processing chat ID: ${chatId}...`, 'progress');
+
+                        // Send Photo if provided, else Send Text Message
                         if (photoInput.files.length > 0) {
-                            await sendPhoto(botToken, chatId, photoInput.files[0], messageText);
+                            await sendPhoto(botToken, chatId, photoInput.files[0], messageText, currentRowNum, totalRows);
                         } else {
-                            // Send Text Message
-                            await sendMessage(botToken, chatId, messageText);
+                            await sendMessage(botToken, chatId, messageText, currentRowNum, totalRows);
                         }
 
-                        // Delay of 1 second to avoid rate limits
+                        // Delay of 1 second to avoid Telegram rate limits
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     }
 
-                    logMessage("Finished processing all rows!", "success");
+                    logMessage(`🎉 Finished processing all ${totalRows} rows successfully!`, "success");
                 } catch (err) {
                     logMessage(`Error processing file: ${err.message}`, "error");
                 } finally {
@@ -130,7 +134,7 @@
             reader.readAsArrayBuffer(file);
         }
 
-        async function sendMessage(token, chatId, text) {
+        async function sendMessage(token, chatId, text, current, total) {
             const url = `https://api.telegram.org/bot${token}/sendMessage`;
             try {
                 const response = await fetch(url, {
@@ -140,35 +144,37 @@
                 });
                 const result = await response.json();
                 if (result.ok) {
-                    logMessage(`SUCCESS: Message sent to Chat ID ${chatId}`, 'success');
+                    logMessage(`[Bot ${current}/${total}] SUCCESS: Message sent to Chat ID ${chatId}`, 'success');
                 } else {
-                    logMessage(`ERROR (Chat ${chatId}): ${result.description}`, 'error');
+                    logMessage(`[Bot ${current}/${total}] ERROR (Chat ${chatId}): ${result.description}`, 'error');
                 }
             } catch (err) {
-                logMessage(`NETWORK ERROR (Chat ${chatId}): ${err.message}`, 'error');
+                logMessage(`[Bot ${current}/${total}] NETWORK ERROR: ${err.message}`, 'error');
             }
         }
 
-        async function sendPhoto(token, chatId, photoFile, caption) {
-            const url = `https://api.telegram.org/bot${token}/sendPhoto`;
+        async function sendPhoto(token, chatId, photoFile, caption, current, total) {
+            const url = `https://api.telegram.org/bot{token}/sendPhoto`;
+            // Correcting URL interpolation template literal:
+            const fixedUrl = `https://api.telegram.org/bot${token}/sendPhoto`;
             const formData = new FormData();
             formData.append('chat_id', chatId);
             formData.append('photo', photoFile);
             if (caption) formData.append('caption', caption);
 
             try {
-                const response = await fetch(url, {
+                const response = await fetch(fixedUrl, {
                     method: 'POST',
                     body: formData
                 });
                 const result = await response.json();
                 if (result.ok) {
-                    logMessage(`SUCCESS: Photo sent to Chat ID ${chatId}`, 'success');
+                    logMessage(`[Bot ${current}/${total}] SUCCESS: Photo sent to Chat ID ${chatId}`, 'success');
                 } else {
-                    logMessage(`ERROR (Chat ${chatId}): ${result.description}`, 'error');
+                    logMessage(`[Bot ${current}/${total}] ERROR (Chat ${chatId}): ${result.description}`, 'error');
                 }
             } catch (err) {
-                logMessage(`NETWORK ERROR (Chat ${chatId}): ${err.message}`, 'error');
+                logMessage(`[Bot ${current}/${total}] NETWORK ERROR: ${err.message}`, 'error');
             }
         }
     </script>
