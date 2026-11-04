@@ -1,308 +1,176 @@
 <!DOCTYPE html>
-<html lang="pt">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eMola</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html,
-        body {
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-        
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: clamp(10px, 2vw, 20px);
-        }
-        
-        header {
-            width: 100%;
-            max-width: 480px;
-            padding: clamp(10px, 3vw, 15px) clamp(15px, 4vw, 20px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: clamp(5px, 2vw, 10px);
-        }
-        
-        .menu-btn {
-            font-size: clamp(24px, 6vw, 28px);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #333;
-        }
-        
-        .logo {
-            height: clamp(32px, 8vw, 40px);
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo img {
-            height: 100%;
-            width: auto;
-            object-fit: contain;
-        }
-        
-        .card {
-            background: rgb(212, 140, 57);
-            border-radius: clamp(16px, 5vw, 24px);
-            padding: clamp(24px, 6vw, 32px) clamp(20px, 5vw, 28px);
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        @media (min-width: 769px) {
-            body {
-                padding: clamp(15px, 3vw, 20px);
-                justify-content: center;
-            }
-            .card {
-                padding: clamp(30px, 5vw, 40px) clamp(25px, 4vw, 30px);
-            }
-        }
-        
-        .title {
-            font-size: clamp(22px, 5vw, 26px);
-            font-weight: 700;
-            color: #333;
-            margin-bottom: clamp(4px, 1.5vw, 6px);
-        }
-        
-        .subtitle {
-            font-size: clamp(13px, 3.5vw, 15px);
-            color: #777;
-            margin-bottom: clamp(18px, 5vw, 24px);
-        }
-        
-        .calc-section {
-            background: #f8f9ff;
-            border-radius: clamp(15px, 4vw, 20px);
-            padding: clamp(18px, 5vw, 24px);
-            margin-bottom: clamp(18px, 5vw, 24px);
-            text-align: left;
-        }
-        
-        .calc-title {
-            font-size: clamp(16px, 4vw, 19px);
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: clamp(18px, 5vw, 24px);
-            color: #333;
-        }
-        
-        .input-group {
-            margin-bottom: clamp(24px, 7vw, 32px);
-        }
-        
-        .input-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: clamp(8px, 2vw, 10px);
-            font-weight: 600;
-            font-size: clamp(13px, 3.5vw, 15px);
-        }
-        
-        .input-label {
-            color: #333;
-        }
-        
-        .input-value {
-            color: hsl(22, 86%, 60%);
-            font-weight: 700;
-        }
-        
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #e0e0e0;
-            outline: none;
-        }
-        
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: clamp(24px, 6vw, 28px);
-            height: clamp(24px, 6vw, 28px);
-            border-radius: 50%;
-            background: #4361ee;
-            cursor: pointer;
-        }
-        
-        .range-labels {
-            display: flex;
-            justify-content: space-between;
-            color: #999;
-            font-size: clamp(12px, 3vw, 14px);
-            margin-top: clamp(6px, 2vw, 8px);
-        }
-        
-        .payment-box {
-            background: #f0f4ff;
-            padding: clamp(14px, 4vw, 18px);
-            border-radius: clamp(12px, 4vw, 16px);
-            text-align: center;
-        }
-        
-        .payment-label {
-            display: block;
-            color: #666;
-            margin-bottom: clamp(6px, 2vw, 8px);
-            font-size: clamp(12px, 3vw, 14px);
-        }
-        
-        .payment-amount {
-            font-size: clamp(26px, 7vw, 30px);
-            font-weight: 700;
-            color: #4361ee;
-        }
-        
-        .apply-btn {
-            width: 100%;
-            padding: clamp(12px, 4vw, 16px);
-            background: linear-gradient(to right, #dda732, #e09d0d);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: clamp(16px, 4vw, 18px);
-            font-weight: 700;
-            cursor: pointer;
-            margin-bottom: clamp(18px, 5vw, 24px);
-        }
-        
-        .features {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: clamp(10px, 3vw, 20px);
-        }
-        
-        .feature {
-            text-align: center;
-            color: #777;
-            font-size: clamp(11px, 3vw, 13px);
-            flex: 1 0 100px;
-        }
-        
-        .feature-icon {
-            font-size: clamp(32px, 8vw, 36px);
-            margin-bottom: clamp(6px, 2vw, 8px);
-        }
-        
-        footer {
-            padding: clamp(10px, 3vw, 15px);
-            color: #aaa;
-            font-size: clamp(11px, 3vw, 13px);
-            text-align: center;
-            flex-shrink: 0;
-        }
-    </style>
+    <title>Telegram Excel Sender Bot</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS to read Excel files in the browser -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
+<body class="bg-gray-100 min-h-screen py-10 px-4">
 
-<body>
-    <header>
-        <button class="menu-btn">☰</button>
-        <div class="logo"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLjt7GJwM7u7GcGVvgKYFLd3Rbs5izlnLeBAf_tGdu8Q&s=10" alt="eMola"></div>
-        <div></div>
-    </header>
-    <main class="card">
-        <div>
-            <h1 class="title">Aprove o Seu Empréstimo Rápido</h1>
-            <p class="subtitle">Aprovação rápida • Taxas competitivas • Condições flexíveis</p>
-            <div class="calc-section">
-                <h2 class="calc-title">Calculadora de Empréstimo</h2>
-                <div class="input-group">
-                    <div class="input-header">
-                        <span class="input-label">Montante do Empréstimo</span>
-                        <span class="input-value" id="amountValue">320.000 MZN</span>
-                    </div>
-                    <input type="range" class="slider" min="5000" max="320000" step="1000" value="320000" id="amountSlider">
-                    <div class="range-labels"><span>5.000 MZN</span><span>320.000 MZN</span></div>
-                </div>
-                <div class="input-group">
-                    <div class="input-header">
-                        <span class="input-label">Prazo do Empréstimo</span>
-                        <span class="input-value" id="termValue">12 meses</span>
-                    </div>
-                    <input type="range" class="slider" min="6" max="60" step="6" value="12" id="termSlider">
-                    <div class="range-labels"><span>6 meses</span><span>60 meses</span></div>
-                </div>
-                <div class="payment-box">
-                    <span class="payment-label">Pagamento Mensal</span>
-                    <span class="payment-amount" id="paymentAmount">0.00 MZN</span>
-                </div>
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Telegram Excel Sender Bot</h2>
+
+        <!-- Form Section -->
+        <div class="space-y-4">
+            <!-- File Upload -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Upload Excel File (.xlsx, .xls)</label>
+                <input type="file" id="excelFile" accept=".xlsx, .xls" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
             </div>
-            <button class="apply-btn" id="applyBtn">CANDIDATAR-SE AGORA</button>
-        </div>
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">⚡</div>Aprovação Rápida<br>Em até 24 horas</div>
-            <div class="feature">
-                <div class="feature-icon">💰</div>Taxas Baixas<br>A partir de 8%</div>
-            <div class="feature">
-                <div class="feature-icon">🔒</div>Seguro<br>Nível bancário</div>
-        </div>
-    </main>
-    <footer>© 2025 eMola</footer>
-    <script>
-        const amountSlider = document.getElementById('amountSlider');
-        const termSlider = document.getElementById('termSlider');
-        const amountValue = document.getElementById('amountValue');
-        const termValue = document.getElementById('termValue');
-        const paymentAmount = document.getElementById('paymentAmount');
 
-        function formatMZN(value) {
-            return value.toLocaleString('pt-MZ', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) + ' MZN';
+            <!-- Message Input -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Message Text</label>
+                <textarea id="messageText" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Type your message here..."></textarea>
+            </div>
+
+            <!-- Optional Image Upload -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Optional Photo</label>
+                <input type="file" id="photoFile" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+            </div>
+
+            <!-- Submit Button -->
+            <button onclick="startSending()" id="sendBtn" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
+                Start Sending Messages
+            </button>
+        </div>
+
+        <!-- Logs / Status Section -->
+        <div class="mt-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Live Status Logs:</h3>
+            <div id="logContainer" class="bg-black text-green-400 font-mono text-xs p-4 rounded-md h-48 overflow-y-auto space-y-1">
+                <p class="text-gray-500">// Waiting for input...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        function logMessage(text, type = "info") {
+            const container = document.getElementById('logContainer');
+            const p = document.createElement('p');
+            if (type === 'success') p.className = 'text-green-400';
+            else if (type === 'error') p.className = 'text-red-400';
+            else p.className = 'text-gray-300';
+            
+            p.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            container.appendChild(p);
+            container.scrollTop = container.scrollHeight;
         }
 
-        function updateCalculator() {
-            const amount = parseFloat(amountSlider.value);
-            const months = parseFloat(termSlider.value);
-            amountValue.textContent = amount.toLocaleString('pt-MZ') + ' MZN';
-            termValue.textContent = months + (months === 1 ? ' mês' : ' meses');
-            const annualRate = 0.08;
-            const monthlyRate = annualRate / 12;
-            if (months === 0) {
-                paymentAmount.textContent = formatMZN(amount);
-            } else {
-                const power = Math.pow(1 + monthlyRate, months);
-                const monthlyPayment = amount * (monthlyRate * power) / (power - 1);
-                paymentAmount.textContent = formatMZN(monthlyPayment);
+        async function startSending() {
+            const fileInput = document.getElementById('excelFile');
+            const messageText = document.getElementById('messageText').value.trim();
+            const photoInput = document.getElementById('photoFile');
+            const sendBtn = document.getElementById('sendBtn');
+
+            if (!fileInput.files.length) {
+                alert("Please upload an Excel file first!");
+                return;
+            }
+
+            if (!messageText && !photoInput.files.length) {
+                alert("Please provide either a text message or a photo to send!");
+                return;
+            }
+
+            sendBtn.disabled = true;
+            sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            logMessage("Reading Excel file...");
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    logMessage(`Found ${rows.length} rows in Excel. Starting broadcast...`);
+
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        const botToken = row[0] ? String(row[0]).trim() : '';
+                        const chatId = row[1] ? String(row[1]).trim() : '';
+
+                        if (!botToken || !chatId) {
+                            logMessage(`Skipping row ${i + 1}: Missing token or chat ID.`, 'error');
+                            continue;
+                        }
+
+                        // Send Photo if provided
+                        if (photoInput.files.length > 0) {
+                            await sendPhoto(botToken, chatId, photoInput.files[0], messageText);
+                        } else {
+                            // Send Text Message
+                            await sendMessage(botToken, chatId, messageText);
+                        }
+
+                        // Delay of 1 second to avoid rate limits
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+
+                    logMessage("Finished processing all rows!", "success");
+                } catch (err) {
+                    logMessage(`Error processing file: ${err.message}`, "error");
+                } finally {
+                    sendBtn.disabled = false;
+                    sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        async function sendMessage(token, chatId, text) {
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: text })
+                });
+                const result = await response.json();
+                if (result.ok) {
+                    logMessage(`SUCCESS: Message sent to Chat ID ${chatId}`, 'success');
+                } else {
+                    logMessage(`ERROR (Chat ${chatId}): ${result.description}`, 'error');
+                }
+            } catch (err) {
+                logMessage(`NETWORK ERROR (Chat ${chatId}): ${err.message}`, 'error');
             }
         }
-        updateCalculator();
-        amountSlider.addEventListener('input', updateCalculator);
-        termSlider.addEventListener('input', updateCalculator);
-        document.getElementById('applyBtn').addEventListener('click', function() {
-            localStorage.setItem('loanAmount', amountSlider.value);
-            localStorage.setItem('loanTerm', termSlider.value);
-            window.location.href = 'application.html';
-        });
+
+        async function sendPhoto(token, chatId, photoFile, caption) {
+            const url = `https://api.telegram.org/bot${token}/sendPhoto`;
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('photo', photoFile);
+            if (caption) formData.append('caption', caption);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.ok) {
+                    logMessage(`SUCCESS: Photo sent to Chat ID ${chatId}`, 'success');
+                } else {
+                    logMessage(`ERROR (Chat ${chatId}): ${result.description}`, 'error');
+                }
+            } catch (err) {
+                logMessage(`NETWORK ERROR (Chat ${chatId}): ${err.message}`, 'error');
+            }
+        }
     </script>
 </body>
-
 </html>
